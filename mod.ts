@@ -81,28 +81,36 @@ export class Router {
     const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
     const withSlash = withoutSlash + "/";
     this._get.set(withoutSlash, func);
-    if (!(withoutSlash === "" && this.root === "/")) this._get.set(withSlash, func);
+    if (!(withoutSlash === "" && this.root === "/")) {
+      this._get.set(withSlash, func);
+    }
   }
 
   public post(route: string, func: (req: ServerRequest) => void) {
     const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
     const withSlash = withoutSlash + "/";
     this._post.set(withoutSlash, func);
-    if (!(withoutSlash === "" && this.root === "/")) this._post.set(withSlash, func);
+    if (!(withoutSlash === "" && this.root === "/")) {
+      this._post.set(withSlash, func);
+    }
   }
 
   public put(route: string, func: (req: ServerRequest) => void) {
     const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
     const withSlash = withoutSlash + "/";
     this._put.set(withoutSlash, func);
-    if (!(withoutSlash === "" && this.root === "/")) this._put.set(withSlash, func);
+    if (!(withoutSlash === "" && this.root === "/")) {
+      this._put.set(withSlash, func);
+    }
   }
 
   public delete(route: string, func: (req: ServerRequest) => void) {
     const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
     const withSlash = withoutSlash + "/";
     this._delete.set(withoutSlash, func);
-    if (!(withoutSlash === "" && this.root === "/")) this._delete.set(withSlash, func);
+    if (!(withoutSlash === "" && this.root === "/")) {
+      this._delete.set(withSlash, func);
+    }
   }
 
   public get routes(): Endpoint {
