@@ -1,7 +1,6 @@
 import { Endpoint, EndpointRoutes, QueryType } from "./types.ts";
 import {
   listenAndServe,
-  ServerRequest,
 } from "https://deno.land/std/http/server.ts";
 
 export class Server {
