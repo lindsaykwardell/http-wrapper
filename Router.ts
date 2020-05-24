@@ -14,41 +14,45 @@ export class Router {
   private _post: EndpointMap = new Map();
   private _put: EndpointMap = new Map();
   private _delete: EndpointMap = new Map();
+  private _patch: EndpointMap = new Map();
+  private _head: EndpointMap = new Map();
+  private _options: EndpointMap = new Map();
 
-  public get(route: string, func: (req: ServerRequest) => void) {
+  private process(route: string, func: (req: ServerRequest) => void, target: EndpointMap){
     const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
     const withSlash = withoutSlash + "/";
-    this._get.set(withoutSlash, func);
+    target.set(withoutSlash, func);
     if (!(withoutSlash === "" && this.root === "/")) {
-      this._get.set(withSlash, func);
+      target.set(withSlash, func);
     }
+  }
+
+  public get(route: string, func: (req: ServerRequest) => void) {
+    this.process(route, func, this._get);
   }
 
   public post(route: string, func: (req: ServerRequest) => void) {
-    const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
-    const withSlash = withoutSlash + "/";
-    this._post.set(withoutSlash, func);
-    if (!(withoutSlash === "" && this.root === "/")) {
-      this._post.set(withSlash, func);
-    }
+    this.process(route, func, this._post);
   }
 
   public put(route: string, func: (req: ServerRequest) => void) {
-    const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
-    const withSlash = withoutSlash + "/";
-    this._put.set(withoutSlash, func);
-    if (!(withoutSlash === "" && this.root === "/")) {
-      this._put.set(withSlash, func);
-    }
+    this.process(route, func, this._put);
   }
 
   public delete(route: string, func: (req: ServerRequest) => void) {
-    const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
-    const withSlash = withoutSlash + "/";
-    this._delete.set(withoutSlash, func);
-    if (!(withoutSlash === "" && this.root === "/")) {
-      this._delete.set(withSlash, func);
-    }
+    this.process(route, func, this._delete);
+  }
+
+  public head(route: string, func: (req: ServerRequest) => void) {
+    this.process(route, func, this._head);
+  }
+
+  public options(route: string, func: (req: ServerRequest) => void) {
+    this.process(route, func, this._options);
+  }
+
+  public patch(route: string, func: (req: ServerRequest) => void) {
+    this.process(route, func, this._patch);
   }
 
   public get routes(): Endpoint {
@@ -59,6 +63,9 @@ export class Router {
         postRoutes: this._post,
         putRoutes: this._put,
         deleteRoutes: this._delete,
+        optionsRoutes: this._options,
+        headRoutes: this._head,
+        patchRoutes: this._patch
       },
     };
   }
