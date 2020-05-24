@@ -32,13 +32,6 @@ export class Server {
   }
 
   private async listenAndServeHandler(req: ServerRequest) {
-    if (
-      this.staticHandler &&
-      req.url.indexOf(this.staticHandler.staticUrlPrefix) === 0
-    ) {
-      this.staticHandler.process(req);
-      return;
-    }
     for (const [routePrefix, routePrefixEndpoints] of this.routes) {
       let methodRoutes: EndpointMap | undefined = routePrefixEndpoints.get(
         req.method as QueryType
@@ -52,6 +45,15 @@ export class Server {
         }
       }
     }
+
+    if (
+      this.staticHandler &&
+      req.url.indexOf(this.staticHandler.staticUrlPrefix) === 0
+    ) {
+      this.staticHandler.process(req);
+      return;
+    }
+
     req.respond({ status: 404 });
   }
 
