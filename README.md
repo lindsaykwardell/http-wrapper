@@ -63,6 +63,9 @@ There are two classes: `Server` and `Router`.
 - POST
 - PUT
 - DELETE
+- PATCH
+- OPTIONS
+- HEAD
 
 New routes are created as follows:
 
