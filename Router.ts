@@ -1,6 +1,4 @@
-import {
-  ServerRequest,
-} from "https://deno.land/std/http/server.ts";
+import { ServerRequest } from "https://deno.land/std/http/server.ts";
 import { Endpoint, EndpointMap } from "./types.ts";
 
 export class Router {
@@ -18,7 +16,11 @@ export class Router {
   private _head: EndpointMap = new Map();
   private _options: EndpointMap = new Map();
 
-  private process(route: string, func: (req: ServerRequest) => void, target: EndpointMap){
+  private process(
+    route: string,
+    func: (req: ServerRequest) => void,
+    target: EndpointMap
+  ) {
     const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
     const withSlash = withoutSlash + "/";
     target.set(withoutSlash, func);
@@ -65,7 +67,7 @@ export class Router {
         deleteRoutes: this._delete,
         optionsRoutes: this._options,
         headRoutes: this._head,
-        patchRoutes: this._patch
+        patchRoutes: this._patch,
       },
     };
   }
