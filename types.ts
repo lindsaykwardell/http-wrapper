@@ -1,6 +1,4 @@
-import {
-  ServerRequest,
-} from "https://deno.land/std/http/server.ts";
+import { ServerRequest } from "https://deno.land/std/http/server.ts";
 
 export enum QueryType {
   GET = "GET",
@@ -9,7 +7,7 @@ export enum QueryType {
   DELETE = "DELETE",
   OPTIONS = "OPTIONS",
   HEAD = "HEAD",
-  PATCH = "PATCH"
+  PATCH = "PATCH",
 }
 
 export type EndpointMap = Map<string, (req: ServerRequest) => void>;

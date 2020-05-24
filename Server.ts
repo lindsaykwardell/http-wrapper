@@ -1,11 +1,14 @@
 import { Endpoint, EndpointRoutes, QueryType, EndpointMap } from "./types.ts";
-import { listenAndServe, ServerRequest } from "https://deno.land/std/http/server.ts";
+import {
+  listenAndServe,
+  ServerRequest,
+} from "https://deno.land/std/http/server.ts";
 import { exists } from "https://deno.land/std/fs/exists.ts";
 import { StaticHandler } from "./StaticHandler.ts";
 
 export class Server {
   private routes: Map<string, EndpointRoutes> = new Map();
-  private staticHandler: StaticHandler|undefined;
+  private staticHandler: StaticHandler | undefined;
 
   public use(endpoint: Endpoint) {
     const endpoints: EndpointRoutes = new Map();
@@ -21,21 +24,26 @@ export class Server {
     this.routes.set(endpoint.uri, endpoints);
   }
 
-  public async static(localFolderPath: string, urlPrefix: string = ''){
-    if (!await exists(localFolderPath)){
+  public async static(localFolderPath: string, urlPrefix: string = "") {
+    if (!(await exists(localFolderPath))) {
       return;
     }
     this.staticHandler = new StaticHandler(localFolderPath, urlPrefix);
   }
 
-  private async listenAndServeHandler(req:ServerRequest){
-    if (this.staticHandler && req.url.indexOf(this.staticHandler.staticUrlPrefix) === 0){
+  private async listenAndServeHandler(req: ServerRequest) {
+    if (
+      this.staticHandler &&
+      req.url.indexOf(this.staticHandler.staticUrlPrefix) === 0
+    ) {
       this.staticHandler.process(req);
       return;
     }
     for (const [routePrefix, routePrefixEndpoints] of this.routes) {
-      let methodRoutes:EndpointMap|undefined = routePrefixEndpoints.get(req.method as QueryType);
-      if (methodRoutes){
+      let methodRoutes: EndpointMap | undefined = routePrefixEndpoints.get(
+        req.method as QueryType
+      );
+      if (methodRoutes) {
         for (const [endpoint, func] of methodRoutes) {
           if (req.url === (routePrefix + endpoint).replace(/(\/\/)/g, "/")) {
             func(req);
