@@ -44,6 +44,10 @@ const app = new Server();
 app.use(router.routes);
 app.use(bobRouter.routes);
 
+
+// Add static assets folder
+app.static("static", "/static")
+
 app.start({ port: 3000 }).then((config) =>
   console.log(`Server running on localhost:${config.port}`)
 );
@@ -77,6 +81,16 @@ router.get("/", (req) => {
 ```
 
 The request is the standard `ServerRequest` object native to Deno. It is not modified in any way, and you can interact with it directly. The purpose of this library is to make it easy to work with, not to change the interface.
+
+To add a static file folder (useful for serving HTML/CSS/JS files), use the following:
+
+```javascript
+const app = new Server();
+
+// First attribute is local folder where files are located, second is the route to load the files from
+app.static("static", "/static")
+
+```
 
 When you are ready to apply your route and start your server, run the following:
 
