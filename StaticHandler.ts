@@ -24,6 +24,11 @@ export class StaticHandler {
         this.localFolderPath,
         req.url.replace(this.staticUrlPrefix, "").replace("/", sep)
       );
+
+      if (localFile === this.localFolderPath) {
+        localFile += "/index.html";
+      }
+
       let data = await Deno.readFile(localFile);
       if (!data) {
         throw new Deno.errors.NotFound();
