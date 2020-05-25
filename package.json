@@ -1,6 +1,6 @@
 {
   "name": "http-wrapper",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Simple Server/Router wrapper around Deno's HTTP module",
   "main": "mod.ts",
   "repository": "git@github.com:lindsaykwardell/deno-http-wrapper.git",
