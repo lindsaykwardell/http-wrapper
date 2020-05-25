@@ -1,12 +1,16 @@
 # Deno HTTP Wrapper
 
-### *Simple Server/Router wrapper around Deno's HTTP module*
+### _Simple Server/Router wrapper around Deno's HTTP module_
+
+[Example app using Vite and Deno](https://arcane-cove-31742.herokuapp.com/)
+
+[Example GitHub repo](https://github.com/lindsaykwardell/http-wrapper-example)
 
 ## Intent
 
-I really like Deno as a concept, and I especially like the default HTTP library. I feel like it doesn't need all the abstraction put on top of it to build something pretty good. 
+I really like Deno as a concept, and I especially like the default HTTP library. I feel like it doesn't need all the abstraction put on top of it to build something pretty good.
 
-The intent of this library is to build a lightweight wrapper around it that provides a more intuitive API around the `listenAndServe()` function. 
+The intent of this library is to build a lightweight wrapper around it that provides a more intuitive API around the `listenAndServe()` function.
 
 Some of the API is inspired by Express.js.
 
@@ -44,21 +48,20 @@ const app = new Server();
 app.use(router.routes);
 app.use(bobRouter.routes);
 
-
 // Add static assets folder
-app.static("static", "/static")
+app.static("static", "/static");
 
-app.start({ port: 3000 }).then((config) =>
-  console.log(`Server running on localhost:${config.port}`)
-);
-
+app
+  .start({ port: 3000 })
+  .then((config) => console.log(`Server running on localhost:${config.port}`));
 ```
 
 ## Use
 
 There are two classes: `Server` and `Router`.
 
-`Router` currently supports four HTTP methods: 
+`Router` currently supports four HTTP methods:
+
 - GET
 - POST
 - PUT
@@ -80,7 +83,7 @@ A new endpoint for the given route can be added by using its specific method:
 ```javascript
 router.get("/", (req) => {
   // Perform actions on request
-})
+});
 ```
 
 The request is the standard `ServerRequest` object native to Deno. It is not modified in any way, and you can interact with it directly. The purpose of this library is to make it easy to work with, not to change the interface.
@@ -91,25 +94,23 @@ To add a static file folder (useful for serving HTML/CSS/JS files), use the foll
 const app = new Server();
 
 // First attribute is local folder where files are located, second is the route to load the files from
-app.static("static", "/static")
-
+app.static("static", "/static");
 ```
 
 When you are ready to apply your route and start your server, run the following:
 
 ```javascript
-
 const app = new Server();
 
-app.use(router.routes) // router.routes is a getter, so you do not need to invoke it as a function.
+app.use(router.routes); // router.routes is a getter, so you do not need to invoke it as a function.
 
 // Using promises to know when the server is up
-app.start({ port: 3000 }).then((config) =>
-  console.log(`Server running on localhost:${config.port}`)
-);
+app
+  .start({ port: 3000 })
+  .then((config) => console.log(`Server running on localhost:${config.port}`));
 
 // Using await to know when the server is up
-await app.start({port: 3000});
+await app.start({ port: 3000 });
 
 console.log("Server running on localhost:3000");
 ```
