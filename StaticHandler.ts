@@ -34,7 +34,11 @@ export class StaticHandler {
         throw new Deno.errors.NotFound();
       }
       responseObject.body = data;
-      responseObject.headers = new Headers({ "content-type": contentType(localFile) || 'application/octet-stream' });
+      responseObject.headers = new Headers({
+        "content-type":
+          contentType(localFile.split(".").reverse()[0]) ||
+          "application/octet-stream",
+      });
     } catch (error) {
       responseObject.status = 401;
       if (error.name === "NotFound") {
