@@ -13,7 +13,7 @@ Some of the API is inspired by Express.js.
 ## Example
 
 ```javascript
-import { Server, Router } from "https://deno.land/x/http_wrapper@v0.2.1/mod.ts";
+import { Server, Router } from "https://deno.land/x/http_wrapper@v0.2.4/mod.ts";
 
 const router = new Router();
 
