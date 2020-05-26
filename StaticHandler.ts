@@ -1,6 +1,6 @@
 import { ServerRequest } from "https://deno.land/std/http/server.ts";
 import { parse, join, sep } from "https://deno.land/std/path/mod.ts";
-import mime from "./web_modules/mime.js";
+import { contentType } from "https://deno.land/x/media_types/mod.ts";
 
 export class StaticHandler {
   private localFolderPath: string = "";
@@ -35,7 +35,9 @@ export class StaticHandler {
       }
       responseObject.body = data;
       responseObject.headers = new Headers({
-        "content-type": mime.getType(localFile.split(".").reverse()[0]),
+        "content-type":
+          contentType(localFile.split(".").reverse()[0]) ||
+          "application/octet-stream",
       });
     } catch (error) {
       responseObject.status = 401;
