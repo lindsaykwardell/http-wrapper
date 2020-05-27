@@ -31,4 +31,7 @@ export type Request = {
   query: {
     [key: string]: string;
   };
+  param: {
+    [key: string]: string;
+  }
 };
