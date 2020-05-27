@@ -32,5 +32,6 @@ export type RouteVariables = {
   };
   param: {
     [key: string]: string;
-  }
+  },
+  body: any
 };

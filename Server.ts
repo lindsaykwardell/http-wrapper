@@ -1,3 +1,4 @@
+import { contentType } from "https://deno.land/x/media_types/mod.ts";
 import { Endpoint, EndpointRoutes, QueryType, EndpointMap } from "./types.ts";
 import {
   listenAndServe,
@@ -5,10 +6,28 @@ import {
 } from "https://deno.land/std/http/server.ts";
 import { exists } from "https://deno.land/std/fs/exists.ts";
 import { StaticHandler } from "./StaticHandler.ts";
+import xmlParse from "https://denopkg.com/nekobato/deno-xml-parser/index.ts";
 
 export class Server {
   private routes: Map<string, EndpointRoutes> = new Map();
   private staticHandler: StaticHandler | undefined;
+  private bodyParsers: Map<string, (body: string) => any> = new Map();
+
+  constructor() {
+    this.bodyParsers.set("application/json", JSON.parse);
+    this.bodyParsers.set("application/x-www-form-urlencoded", (body) => {
+      const bodyObj: { [key: string]: string } = {};
+
+      const formBits = body.split("&");
+      for (const bit of formBits) {
+        const [key, val] = bit.split("=");
+        bodyObj[decodeURIComponent(key)] = decodeURIComponent(val);
+      }
+
+      return bodyObj;
+    });
+    this.bodyParsers.set("application/xml", xmlParse);
+  }
 
   public use(endpoint: Endpoint) {
     const endpoints: EndpointRoutes = new Map();
@@ -22,6 +41,10 @@ export class Server {
     endpoints.set(QueryType.OPTIONS, endpoint.routes.optionsRoutes);
 
     this.routes.set(endpoint.uri, endpoints);
+  }
+
+  public useParser(contentType: string, func: (body: string) => any): void {
+    this.bodyParsers.set(contentType, func);
   }
 
   public async static(localFolderPath: string, urlPrefix: string = "") {
@@ -78,6 +101,12 @@ export class Server {
             func(req, {
               query,
               param,
+              body: this.parseBody(
+                new TextDecoder("utf-8").decode(
+                  await Deno.readAll(req.body),
+                ),
+                req.headers,
+              ),
             });
             return;
           }
@@ -113,6 +142,23 @@ export class Server {
       }
     }
     return true;
+  }
+
+  private parseBody(body: string, headers: Headers): any {
+    const contentType = headers.get("content-type");
+
+    if (!contentType) return body;
+
+    try {
+      if (this.bodyParsers.get(contentType)) {
+        return this.bodyParsers.get(contentType)?.(body);
+      }
+    } catch (e) {
+      console.error(e);
+      return {};
+    }
+
+    return body;
   }
 
   public async start(config: Deno.ListenOptions) {
