@@ -1,4 +1,5 @@
-import { Endpoint, EndpointMap, Request } from "./types.ts";
+import { ServerRequest } from "https://deno.land/std/http/server.ts";
+import { Endpoint, EndpointMap, RouteVariables } from "./types.ts";
 
 export class Router {
   private root: string = "/";
@@ -17,7 +18,7 @@ export class Router {
 
   private process(
     route: string,
-    func: (req: Request) => void,
+    func: (req: ServerRequest, vars: RouteVariables) => void,
     target: EndpointMap,
   ) {
     const withoutSlash = route === "/" ? "" : route.replace(/(\/\/)/g, "/");
@@ -28,31 +29,52 @@ export class Router {
     }
   }
 
-  public get(route: string, func: (req: Request) => void) {
+  public get(
+    route: string,
+    func: (req: ServerRequest, vars: RouteVariables) => void,
+  ) {
     this.process(route, func, this._get);
   }
 
-  public post(route: string, func: (req: Request) => void) {
+  public post(
+    route: string,
+    func: (req: ServerRequest, vars: RouteVariables) => void,
+  ) {
     this.process(route, func, this._post);
   }
 
-  public put(route: string, func: (req: Request) => void) {
+  public put(
+    route: string,
+    func: (req: ServerRequest, vars: RouteVariables) => void,
+  ) {
     this.process(route, func, this._put);
   }
 
-  public delete(route: string, func: (req: Request) => void) {
+  public delete(
+    route: string,
+    func: (req: ServerRequest, vars: RouteVariables) => void,
+  ) {
     this.process(route, func, this._delete);
   }
 
-  public head(route: string, func: (req: Request) => void) {
+  public head(
+    route: string,
+    func: (req: ServerRequest, vars: RouteVariables) => void,
+  ) {
     this.process(route, func, this._head);
   }
 
-  public options(route: string, func: (req: Request) => void) {
+  public options(
+    route: string,
+    func: (req: ServerRequest, vars: RouteVariables) => void,
+  ) {
     this.process(route, func, this._options);
   }
 
-  public patch(route: string, func: (req: Request) => void) {
+  public patch(
+    route: string,
+    func: (req: ServerRequest, vars: RouteVariables) => void,
+  ) {
     this.process(route, func, this._patch);
   }
 

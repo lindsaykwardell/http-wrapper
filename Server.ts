@@ -75,8 +75,7 @@ export class Server {
               });
             }
 
-            func({
-              req,
+            func(req, {
               query,
               param,
             });

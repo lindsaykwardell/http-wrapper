@@ -1,4 +1,4 @@
-import { Request } from "./types.ts";
+import { ServerRequest } from "https://deno.land/std/http/server.ts";
 import { Router } from "./Router.ts";
 import {
   acceptWebSocket,
@@ -26,7 +26,7 @@ export class Socket {
     return this.router.routes;
   }
 
-  public conn({ req }: Request): void {
+  public conn(req: ServerRequest): void {
     if (acceptable(req)) {
       acceptWebSocket({
         conn: req.conn,
