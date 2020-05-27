@@ -46,8 +46,9 @@ export class Socket {
 
         for await (const event of ws) {
           try {
-            const msg: Broadcast =
-              typeof event === "string" ? JSON.parse(event) : null;
+            const msg: Broadcast = typeof event === "string"
+              ? JSON.parse(event)
+              : null;
 
             if (msg && msg.event) {
               this.events.get(msg.event)?.(msg, connId);
@@ -81,7 +82,7 @@ export class Socket {
     options?: {
       to?: string;
       from?: string;
-    }
+    },
   ) {
     this.broadcast({
       event,

@@ -10,7 +10,7 @@ export enum QueryType {
   PATCH = "PATCH",
 }
 
-export type EndpointMap = Map<string, (req: ServerRequest) => void>;
+export type EndpointMap = Map<string, (req: ServerRequest, vars: RouteVariables) => void>;
 export type EndpointRoutes = Map<QueryType, EndpointMap>;
 
 export type Endpoint = {
@@ -24,4 +24,13 @@ export type Endpoint = {
     headRoutes: EndpointMap;
     patchRoutes: EndpointMap;
   };
+};
+
+export type RouteVariables = {
+  query: {
+    [key: string]: string;
+  };
+  param: {
+    [key: string]: string;
+  }
 };
