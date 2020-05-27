@@ -34,12 +34,28 @@ export class Server {
   private async listenAndServeHandler(req: ServerRequest) {
     for (const [routePrefix, routePrefixEndpoints] of this.routes) {
       let methodRoutes: EndpointMap | undefined = routePrefixEndpoints.get(
-        req.method as QueryType
+        req.method as QueryType,
       );
       if (methodRoutes) {
         for (const [endpoint, func] of methodRoutes) {
-          if (req.url === (routePrefix + endpoint).replace(/(\/\/)/g, "/")) {
-            func(req);
+          const [url, queryString] = req.url.split("?");
+          const query: {
+            [key: string]: string;
+          } = {};
+
+          if (queryString) {
+            for (const param of queryString.split("&")) {
+              const [key, value] = param.split("=");
+
+              query[key] = value;
+            }
+          }
+
+          if (url === (routePrefix + endpoint).replace(/(\/\/)/g, "/")) {
+            func({
+              req,
+              query
+            });
             return;
           }
         }

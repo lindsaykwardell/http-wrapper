@@ -1,4 +1,4 @@
-import { ServerRequest } from "https://deno.land/std/http/server.ts";
+import { Request } from "./types.ts";
 import { Router } from "./Router.ts";
 import {
   acceptWebSocket,
@@ -26,7 +26,7 @@ export class Socket {
     return this.router.routes;
   }
 
-  public conn(req: ServerRequest): void {
+  public conn({ req }: Request): void {
     if (acceptable(req)) {
       acceptWebSocket({
         conn: req.conn,
@@ -46,8 +46,9 @@ export class Socket {
 
         for await (const event of ws) {
           try {
-            const msg: Broadcast =
-              typeof event === "string" ? JSON.parse(event) : null;
+            const msg: Broadcast = typeof event === "string"
+              ? JSON.parse(event)
+              : null;
 
             if (msg && msg.event) {
               this.events.get(msg.event)?.(msg, connId);
@@ -81,7 +82,7 @@ export class Socket {
     options?: {
       to?: string;
       from?: string;
-    }
+    },
   ) {
     this.broadcast({
       event,
