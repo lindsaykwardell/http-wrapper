@@ -32,14 +32,53 @@ export class Server {
   }
 
   private async listenAndServeHandler(req: ServerRequest) {
+    const [url, queryString] = req.url.split("?");
+
+    const pathBits = this.parsePathBits(url);
+
+    const query: {
+      [key: string]: string;
+    } = {};
+
+    if (queryString) {
+      for (const param of queryString.split("&")) {
+        const [key, value] = param.split("=");
+
+        query[key] = value;
+      }
+    }
+
     for (const [routePrefix, routePrefixEndpoints] of this.routes) {
       let methodRoutes: EndpointMap | undefined = routePrefixEndpoints.get(
-        req.method as QueryType
+        req.method as QueryType,
       );
       if (methodRoutes) {
         for (const [endpoint, func] of methodRoutes) {
-          if (req.url === (routePrefix + endpoint).replace(/(\/\/)/g, "/")) {
-            func(req);
+          const route = (routePrefix + endpoint).replace(/(\/\/)/g, "/");
+          if (
+            url === route ||
+            this.doesRouteMatch(
+              pathBits,
+              this.parsePathBits(
+                route,
+              ),
+            )
+          ) {
+            const param: { [key: string]: string } = {};
+            if (route.includes("{")) {
+              this.parsePathBits(route).forEach((bit, index) => {
+                if (bit.match(/{([A-Z, a-z,0-9]+)}/)) {
+                  const key = bit.replace("{", "").replace("}", "");
+
+                  param[key] = pathBits[index];
+                }
+              });
+            }
+
+            func(req, {
+              query,
+              param,
+            });
             return;
           }
         }
@@ -55,6 +94,25 @@ export class Server {
     }
 
     req.respond({ status: 404 });
+  }
+
+  private parsePathBits(path: string): string[] {
+    const bits = path.split("/");
+    bits.shift();
+    return bits;
+  }
+
+  private doesRouteMatch(req: string[], route: string[]): boolean {
+    if (req.length !== route.length) return false;
+
+    for (let i = 0; i < route.length; i++) {
+      if (
+        !(req[i] === route[i] || route[i].match(/{([A-Z, a-z,0-9]+)}/))
+      ) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public async start(config: Deno.ListenOptions) {
