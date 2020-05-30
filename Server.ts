@@ -1,4 +1,3 @@
-import { contentType } from "https://deno.land/x/media_types/mod.ts";
 import { Endpoint, EndpointRoutes, QueryType, EndpointMap } from "./types.ts";
 import {
   listenAndServe,
