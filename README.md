@@ -23,7 +23,7 @@ import {
   Server,
   Router,
   Socket,
-} from "https://deno.land/x/http_wrapper@v0.4.0/mod.ts";
+} from "https://deno.land/x/http_wrapper@v0.5.0/mod.ts";
 ```
 
 ## Example
@@ -33,7 +33,7 @@ import {
   Server,
   Router,
   Socket,
-} from "https://deno.land/x/http_wrapper@v0.4.0/mod.ts";
+} from "https://deno.land/x/http_wrapper@v0.5.0/mod.ts";
 
 // Create a new route
 const router = new Router();
